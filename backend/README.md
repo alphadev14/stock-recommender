@@ -139,7 +139,7 @@ Then open [http://localhost:8000/docs](http://localhost:8000/docs) to view the S
 
 ## 🧑‍💻 Author & Maintainer
 
-**Alpha** – Data Engineer / AI Stock Explorer
+**Alpha** – Software Engineer / AI Stock Explorer
 
 ---
 
