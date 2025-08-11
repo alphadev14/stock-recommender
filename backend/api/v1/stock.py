@@ -41,3 +41,11 @@ def fetch_data_test(req: FetchRequest):
 #     df30 = df[df['industry'].notnull()].head(30)
 #     result = df30[['ticker', 'company_name', 'industry']].to_dict(orient="records")
 #     return result
+
+
+@router.post("/fetch-and-save")
+def fetch_and_save(req: FetchRequest):
+    df = data_fetcher.fetch_quote_data(req.symbol, req.start, req.end)
+    print("[DEBUG] Data fetched in line 49:", df.tail())
+    data_fetcher.save_price_df_to_db(df, req.symbol)
+    return {"message": "Saved to DB"}

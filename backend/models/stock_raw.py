@@ -4,10 +4,13 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 # ========== stock_raw.stock_prices ==========
+
 class StockPrice(Base):
     __tablename__ = "stock_prices"
-    __table_args__ = {"schema": "stock_raw"}
-    __table_args__ = (UniqueConstraint("ticker", "transactiondate", "resolution"), {"schema": "stock_raw"})
+    __table_args__ = (
+        UniqueConstraint("ticker", "transactiondate", "resolution"),
+        {"schema": "stock.stock_raw"}
+    )
 
     rawid = Column(Integer, primary_key=True, autoincrement=True)
     ticker = Column(String, nullable=False)
@@ -30,9 +33,10 @@ class StockPrice(Base):
 
 
 # ========== stock_raw.stock_info ==========
+
 class StockInfo(Base):
     __tablename__ = "stock_info"
-    __table_args__ = {"schema": "stock_raw"}
+    __table_args__ = {"schema": "stock.stock_raw"}
 
     ticker = Column(String, primary_key=True)
     name = Column(String)

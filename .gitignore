@@ -1,0 +1,83 @@
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.egg
+*.egg-info/
+.eggs/
+*.so
+
+# ========================
+# Environment & Virtual Env
+# ========================
+.env
+.env.*
+*.env
+venv/
+env/
+ENV/
+.venv/
+.python-version
+
+# ========================
+# IDE / Editor files
+# ========================
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# ========================
+# OS generated files
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# Logs
+# ========================
+*.log
+logs/
+log/
+
+# ========================
+# Cache & build
+# ========================
+*.sqlite3
+db.sqlite3
+__pycache__/
+*.pyc
+build/
+dist/
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+.cache/
+
+# ========================
+# Docker
+# ========================
+docker-compose.override.yml
+*.pid
+
+# ========================
+# Node.js (nếu có frontend)
+# ========================
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# ========================
+# Custom for your project
+# ========================
+# Local data files
+data/
+*.csv
+*.json
+
+# Stock recommender temp files
+*.db

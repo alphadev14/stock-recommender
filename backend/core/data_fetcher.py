@@ -2,6 +2,11 @@ from vnstock import Vnstock
 import pandas as pd
 import pandas_ta as ta
 import os
+from core import db
+from models import StockPrice
+from datetime import datetime
+from sqlalchemy import text
+from decimal import Decimal
 
 # ✅ 1. Lấy dữ liệu giá
 def fetch_quote_data(symbol: str, start_date: str, end_date: str, interval: str = "1D") -> pd.DataFrame:
@@ -122,3 +127,51 @@ def save_all_data_to_excel(symbol: str, start: str, end: str) -> str:
 
     print(f"[INFO] Dữ liệu đã được lưu tại: {file_path}")
     return file_path
+
+# ✅ 7. Insert DataFrame vào database
+def save_price_df_to_db(df, symbol):
+    # Kiểm tra kết nối DB và schema trước khi insert
+    session = db.SessionLocal()
+    try:
+        # Kiểm tra kết nối DB
+        session.execute(text("SELECT 1"))
+        # Kiểm tra schema stock_raw đã tồn tại chưa
+        schema_exists = session.execute(
+            text("SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'stock_raw'")
+        ).fetchone()
+        if not schema_exists:
+            session.execute(text("CREATE SCHEMA stock_raw"))
+            session.commit()
+
+        for _, row in df.iterrows():
+            date_value = row["time"]
+            if isinstance(date_value, str):
+                date_value = datetime.strptime(date_value, "%Y-%m-%d").date()
+            elif isinstance(date_value, pd.Timestamp):
+                date_value = date_value.to_pydatetime().date()
+            else:
+                date_value = date_value  # datetime.date
+
+            session.execute(
+                text("SELECT stock_raw.insert_stock_price(:ticker, :transaction_date, :open_p, :high_p, :low_p, :close_p, :adj_close, :volume)"),
+                {
+                    "ticker": symbol,
+                    "transaction_date": date_value,
+                    "open_p": Decimal(row["open"]),
+                    "high_p": Decimal(row["high"]),
+                    "low_p": Decimal(row["low"]),
+                    "close_p": Decimal(row["close"]),
+                    "adj_close": Decimal(row["close"]),  # dùng close nếu chưa có adjusted
+                    "volume": Decimal(row["volume"])
+                }
+            )
+
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        print(f"[ERROR] Lỗi insert dữ liệu cho {symbol}: {e}")
+        raise
+    finally:
+        session.close()
+
+
