@@ -7,6 +7,7 @@ from models import StockPrice
 from datetime import datetime
 from sqlalchemy import text
 from decimal import Decimal
+from typing import List, Dict
 
 # ✅ 1. Lấy dữ liệu giá
 def fetch_quote_data(symbol: str, start_date: str, end_date: str, interval: str = "1D") -> pd.DataFrame:
@@ -69,7 +70,6 @@ def fetch_technical_indicators(df: pd.DataFrame) -> pd.DataFrame:
     print(df.tail())
 
     return df
-
 
 # ✅ 4. Lấy chỉ số tham chiếu VNINDEX
 def fetch_reference_index(index_symbol: str = "VNINDEX", start_date: str = "2024-01-01", end_date: str = "2025-08-01") -> pd.DataFrame:
@@ -174,4 +174,24 @@ def save_price_df_to_db(df, symbol):
     finally:
         session.close()
 
+# ✅ 8. Lấy dữ liệu nhóm cổ phiếu
+def fetch_symbol_vnindex30(group_name: str) -> List[str]:
+    try:
+        stock = Vnstock().stock(symbol="MWG", source="VCI")
+        list_symbols = stock.listing.symbols_by_group(group_name)
+        return list_symbols
+    except Exception as e:
+        print(f"[ERROR] Lỗi khi lấy danh sách VNINDEX30: {e}")
+        return []
 
+# ✅ 9. Lấy thông tin mã cổ phiếu
+def fetch_symbol_info(symbol: str) -> list[dict]:
+    try:
+        from vnstock import Vnstock
+        company = Vnstock().stock(symbol=symbol, source='TCBS').company
+
+        df = company.profile()
+        return df.to_dict(orient="records")  # ✅ list of dicts
+    except Exception as e:
+        print(f"[ERROR] Lỗi khi lấy thông tin cổ phiếu {symbol}: {e}")
+        return []
