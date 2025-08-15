@@ -45,3 +45,10 @@ def calculate_indicators(req: FetchRequest):
 @router.get("/get-symbol-info")
 def get_symbol_info(symbol: str) -> list[dict]:
     return data_fetcher.fetch_symbol_info(symbol)
+
+@router.get("/test")
+def test_endpoint():
+    """
+    Test endpoint to check if the API is working.
+    """
+    return {"message": "API is working!"}
