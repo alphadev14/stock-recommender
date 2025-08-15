@@ -9,3 +9,4 @@ pandas>=2.0.0
 pandas_ta
 vnstock>=3.0.0
 requests>=2.28.0
+setuptools>=65.0.0
